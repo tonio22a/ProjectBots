@@ -132,6 +132,26 @@ WHERE skill_id = ? AND project_id = ? """ # Запиши сюда правиль
 
 if __name__ == '__main__':
     manager = DB_Manager(DATABASE)
-    manager.create_tables()  # Сначала создаем таблицы
-    manager.default_insert()  # Затем вставляем данные
     
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='projects'")
+    table_exists = cursor.fetchone()
+    
+    if not table_exists:
+        manager.create_tables()
+        manager.default_insert()
+        print("Таблицы успешно созданы и заполнены начальными данными")
+    else:
+        print("Таблица 'projects' уже существует")
+    
+    cursor.execute("PRAGMA table_info(projects)")
+    columns = [column[1] for column in cursor.fetchall()]
+    
+    if 'photo' not in columns:
+        cursor.execute("ALTER TABLE projects ADD COLUMN photo TEXT")
+    else:
+        None
+    
+    conn.commit()
+    conn.close()
