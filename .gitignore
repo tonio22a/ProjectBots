@@ -2,3 +2,7 @@
 /config.py
 /projects.db
 /__pycache__
+bot1.py
+gpt/responses.py
+gpt/gpt.py
+gpt/commands.py
